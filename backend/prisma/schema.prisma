@@ -1,0 +1,71 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              Int             @id @default(autoincrement())
+  username        String          @unique
+  fullname        String
+  email           String          @unique
+  password        String
+  type            AccountType
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  questionPapers  QuestionPaper[]
+}
+
+model DocumentMetadata {
+  id              Int           @id @default(autoincrement())
+  name            String
+  mimeType        String
+  url             String
+  uploadedAt      DateTime       @default(now())
+  questionPapers  QuestionPaper[]
+}
+
+model QuestionPaper {
+  id            String             @id @default(uuid())
+  title         String        
+  totalMarks    Int           
+  difficulty    difficultyType
+  questions     Json
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+  userId        Int
+  documentId    Int
+  user          User             @relation(fields: [userId],references: [id], onDelete: Cascade)
+  document      DocumentMetadata @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  questionTypes QuestionType[]
+}
+
+model QuestionType {
+  id                Int           @id @default(autoincrement())
+  type              QuestionTypes        
+  marksPerQuestion  Int          
+  numberOfQuestions Int         
+  questionPaper     QuestionPaper @relation(fields: [questionPaperId], references: [id], onDelete: Cascade)
+  questionPaperId   String
+}
+
+enum AccountType {
+  student
+  teacher
+}
+
+enum difficultyType {
+  low
+  medium
+  high
+}
+
+enum QuestionTypes {
+  MCQ
+  FIB
+  SAQ
+  LAQ
+}
