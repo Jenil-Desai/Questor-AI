@@ -15,11 +15,12 @@ app.use(cors());
 app.use("/api/v1/user", userRoutes);
 app.use("/api/v1/question-paper", questionPaperRoutes);
 
-app.all("*", (req, res, next) => {
-  next(new ExpressError(404, "EndPoint Not Found"));
-});
+// app.all("*", (req, res, next) => {
+//   next(new ExpressError(404, "EndPoint Not Found"));
+// });
 
 app.use((err, req, res, next) => {
+  console.log(err)
   let { statusCode = 500, message = "Something Went Wrong" } = err;
   res.status(statusCode).json({ error: message });
 });

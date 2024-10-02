@@ -5,9 +5,11 @@ import bcrypt from "bcrypt";
 const prisma = new PrismaClient();
 
 export const userSignup = async (req, res) => {
+  console.table(req.body)
+ 
   const { username, fullname, email, password, type } = req.body;
 
-  const checkUser = await prisma.user.findUnique({
+  const checkUser = await prisma.user.findFirst({
     where: {
       username,
     },
@@ -36,7 +38,7 @@ export const userSignup = async (req, res) => {
 export const userSignin = async (req, res) => {
   const { username, password } = req.body;
 
-  const checkUser = await prisma.user.findUnique({
+  const checkUser = await prisma.user.findFirst({
     where: {
       username,
     },

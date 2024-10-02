@@ -9,10 +9,12 @@ import fileUploader from "../utils/fileUploader.js";
 const prisma = new PrismaClient();
 
 export const questionPaperCreate = async (req, res) => {
+  console.log(res.locals.user)
   const { body } = req;
-  const { id } = res.locals.user;
+  const { userId } = req.userId;
   const requestBody = JSON.parse(body.body);
   const { title, difficulty, questionType } = requestBody;
+ 
 
   const docsResponse = await fileUploader(title, req.file.path);
 
@@ -34,7 +36,7 @@ export const questionPaperCreate = async (req, res) => {
       totalMarks: parseInt(generatedQuestionPaper.totalMarks),
       difficulty,
       questions: generatedQuestionPaper.questions,
-      userId: id,
+      userId: userId,
       documentId: docsMetadata.id,
     },
   });
