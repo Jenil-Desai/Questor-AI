@@ -9,12 +9,11 @@ import fileUploader from "../utils/fileUploader.js";
 const prisma = new PrismaClient();
 
 export const questionPaperCreate = async (req, res) => {
-  console.log(res.locals.user)
-  const { body } = req;
-  const { userId } = req.userId;
-  const requestBody = JSON.parse(body.body);
+  const body = req.body;
+  const userId = res.locals.user.id;
+  const requestBody = JSON.parse(body.data);
   const { title, difficulty, questionType } = requestBody;
- 
+  console.log(requestBody);
 
   const docsResponse = await fileUploader(title, req.file.path);
 
@@ -29,7 +28,7 @@ export const questionPaperCreate = async (req, res) => {
   const prompt = promptGenerator(questionType, difficulty);
 
   const generatedQuestionPaper = await questionPaperGenerator(docsMetadata, prompt);
-
+  console.log(typeof generatedQuestionPaper);
   const questionPaper = await prisma.questionPaper.create({
     data: {
       title,
@@ -46,8 +45,8 @@ export const questionPaperCreate = async (req, res) => {
     await prisma.questionType.create({
       data: {
         type: type,
-        marksPerQuestion,
-        numberOfQuestions,
+        marksPerQuestion: Number.parseInt(marksPerQuestion),
+        numberOfQuestions: Number.parseInt(numberOfQuestions),
         questionPaperId: questionPaper.id,
       },
     });
@@ -131,6 +130,28 @@ export const questionPaperDetails = async (req, res) => {
   }
 
   res.status(200).json(questionPaper);
+};
+
+export const questionPaperHistroy = async (req, res) => {
+  const userId = res.locals.user.id;
+
+  const questionPapers = await prisma.questionPaper.findMany({
+    where: {
+      userId,
+    },
+    select: {
+      id: true,
+      title: true,
+      totalMarks: true,
+      difficulty: true,
+      createdAt: true,
+    },
+    orderBy: {
+      createdAt: "asc",
+    },
+  });
+
+  res.status(200).json(questionPapers);
 };
 
 export const questionPaperDestroy = async (req, res) => {

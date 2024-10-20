@@ -5,8 +5,8 @@ import bcrypt from "bcrypt";
 const prisma = new PrismaClient();
 
 export const userSignup = async (req, res) => {
-  console.table(req.body)
- 
+  console.table(req.body);
+
   const { username, fullname, email, password, type } = req.body;
 
   const checkUser = await prisma.user.findFirst({
@@ -65,6 +65,9 @@ export const userDetails = async (req, res) => {
       id,
       username,
       email,
+    },
+    include: {
+      questionPapers: true,
     },
   });
 

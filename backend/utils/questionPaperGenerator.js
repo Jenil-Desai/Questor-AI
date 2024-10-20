@@ -20,8 +20,6 @@ export default async function questionPaperGenerator(docsMetadata, prompt) {
     prompt,
   ]);
 
-  // const response = await result.response.text();
-
   const responseText = await result.response.text();
   const response = await JSON.parse(responseText);
   return response;

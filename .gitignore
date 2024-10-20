@@ -2,3 +2,4 @@ node_modules
 uploads
 pdfs
 .env
+.DS_Store

@@ -39,7 +39,9 @@ export default function promptGenerator(questionType, difficulty) {
       ]
     }
       
-    Replace placeholders with actual questions and answers based on the material. The total marks for the paper should be [T].`;
+    Replace placeholders with actual questions and answers based on the material. The total marks for the paper should be [T].
+    Don't Use Any backticks and formatters just return normal JSON Object.
+    `;
 
   return prompt;
 }
